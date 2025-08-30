@@ -1,0 +1,14 @@
+<!-- Email template for ticket confirmation -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Confirmation</title>
+</head>
+<body>
+    <h2>Booking Confirmed!</h2>
+    <p>Dear {{ user.name }},</p>
+    <p>Your booking for <strong>{{ booking.event.name }}</strong> is confirmed.</p>
+    <p>Ticket ID: <strong>{{ booking.id }}</strong></p>
+    <p>Thank you for booking with us!</p>
+</body>
+</html>
