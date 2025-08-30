@@ -20,5 +20,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('events.urls')),  # Use 'events.urls' instead of 'eventbox.urls'
+    path('', include('events.urls')),   
+    path("bookings/", include("bookings.urls")),
 ]

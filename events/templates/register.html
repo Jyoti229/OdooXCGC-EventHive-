@@ -3,7 +3,7 @@
 {% block content %}
 <section class="register-hero">
   <div class="container fade-in">
-    <h1 class="magic-title">Create Your <span>EventHive</span> Account</h1>
+    <h1 class="magic-title">Create Your <span>EventBox</span> Account</h1>
     <p class="sub-text">Be part of the hive 🐝 — explore, host, and join exciting events!</p>
   </div>
 </section>
@@ -12,39 +12,25 @@
   <div class="container fade-in">
     <form method="post" action="{% url 'register' %}" class="register-form">
       {% csrf_token %}
-      
-      <!-- Basic Info -->
       <input type="text" name="username" placeholder="Username" required>
       <input type="email" name="email" placeholder="Email" required>
-      
-      <!-- Passwords -->
       <input type="password" name="password1" placeholder="Password" required>
       <input type="password" name="password2" placeholder="Confirm Password" required>
-      
-      <!-- Extra Fields -->
       <input type="text" name="phone" placeholder="Phone Number" required>
+      <input type="text" name="address" placeholder="Address" required>
       <input type="text" name="city" placeholder="City" required>
       <input type="text" name="state" placeholder="State" required>
       <input type="text" name="country" placeholder="Country" required>
-      
-      <!-- Role -->
-      <select name="role" required>
-        <option value="">Select Role</option>
-        <option value="attendee">🎟 Attendee</option>
-        <option value="organizer">🎤 Organizer</option>
-      </select>
-      
-      <button type="submit" class="magic-btn">Join EventHive ✨</button>
+      <button type="submit" class="magic-btn">Join MystoHub ✨</button>
     </form>
-
-    <!-- Show messages -->
     {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-          <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
   </div>
 </section>
 {% endblock %}
