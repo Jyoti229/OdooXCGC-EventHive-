@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import Trick, Comment, Category, UserProfile
+from .models import Event, TicketType, Category, UserProfile, EventFeedback, FavoriteEvent, PromoCode
 from .forms import CommentForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db import IntegrityError
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q
-
+from django.shortcuts import render, get_object_or_404
 
 # Home Page
 def home(request):
@@ -63,52 +63,62 @@ def category_list(request):
     categories = Category.objects.all()
     return render(request, 'categories.html', {'categories': categories})
 
-# Trick List by Category
-def trick_list_by_category(request, slug):
+#Event List by Category
+def event_list_by_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    tricks = Trick.objects.filter(category=category)
-    return render(request, 'trick_list.html', {
-        'tricks': tricks,
+    events = Event.objects.filter(category=category)
+    return render(request, 'event_list.html', {
+        'events': events,
         'category': category
     })
 
-# Trick Detail Page + Comments
-def trick_detail(request, pk):
-    trick = get_object_or_404(Trick, pk=pk)
-    comments = trick.comments.all().order_by('-created_at')
+# Event detail page
+def event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    return render(request, 'event_detail.html', {
+        'event': event
+    })
+
+# # Event Detail + Feedback
+def event_detail(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    feedbacks = event.feedbacks.all().order_by('-created_at')
 
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = EventFeedbackForm(request.POST)
         if form.is_valid():
-            new_comment = form.save(commit=False)
-            new_comment.trick = trick
-            new_comment.user = request.user
-            new_comment.save()
-            return redirect('trick_detail.html', pk=pk)
+            new_feedback = form.save(commit=False)
+            new_feedback.event = event
+            new_feedback.user = request.user
+            new_feedback.save()
+            return redirect('event_detail', pk=pk)   # ✅ url name
     else:
-        form = CommentForm()
+        form = EventFeedbackForm()
 
-    return render(request, 'trick_detail.html', {
-        'trick': trick,
+    return render(request, 'event_detail.html', {
+        'event': event,
         'form': form,
-        'comments': comments
+        'feedbacks': feedbacks
     })
 
 
-def trick_search(request):
+# Event Search
+def event_search(request):
     query = request.GET.get('q')
     results = []
 
     if query:
-        results = Trick.objects.filter(
+        results = Event.objects.filter(
             Q(title__icontains=query) |
-            Q(description__icontains=query)
+            Q(description__icontains=query) |
+            Q(location__icontains=query)
         )
 
-    return render(request, 'trick_search_results.html', {
+    return render(request, 'event_search_results.html', {
         'query': query,
         'results': results
     })
+
 
 def login_view(request):
     if request.method == 'POST':

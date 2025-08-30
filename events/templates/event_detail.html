@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero" id="event-detail-hero">
+  <h1 class="magic-title">{{ event.title }}</h1>
+  <p class="typewriter">📅 {{ event.date }} | 📍 {{ event.location }}</p>
+</div>
+
+<section class="event-detail-container">
+  <div class="event-detail-card">
+    {% if event.image %}
+      <img src="{{ event.image.url }}" alt="{{ event.title }}">
+    {% else %}
+      <img src="{% static 'images/default_event.jpg' %}" alt="Event">
+    {% endif %}
+
+    <div class="event-info">
+      <h2>{{ event.title }}</h2>
+      <p>{{ event.description }}</p>
+
+      {% if event.organizer %}
+        <h4>👤 Organized By:</h4>
+        <p>{{ event.organizer }}</p>
+      {% endif %}
+
+      {% if event.tags %}
+        <div class="tags">
+          {% for tag in event.tags.all %}
+            <span class="badge">#{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="btn-group">
+        <a href="{% url 'event_list' %}" class="magic-btn">⬅ Back to Events</a>
+        {% if event.registration_link %}
+          <a href="{{ event.registration_link }}" target="_blank" class="magic-btn">📝 Register</a>
+        {% endif %}
+      </div>
+
+      {% if event.video_url %}
+        <div class="video-section">
+          <h3>🎥 Event Highlights</h3>
+          <iframe width="100%" height="315" src="{{ event.video_url|safe }}" frameborder="0" allowfullscreen></iframe>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="comments-section">
+  <h2>⭐ User Reviews</h2>
+  {% for comment in event.comments.all %}
+    <div class="comment">
+      <p><strong>{{ comment.user.username }}</strong> rated {{ comment.rating }}/5</p>
+      <p>{{ comment.content }}</p>
+      <span class="timestamp">{{ comment.created_at|timesince }} ago</span>
+    </div>
+  {% empty %}
+    <p>No reviews yet. Be the first to comment!</p>
+  {% endfor %}
+</section>
+{% endblock %}

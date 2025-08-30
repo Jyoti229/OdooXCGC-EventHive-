@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero" id="event-hero">
+  <h1 class="magic-title">🎉 All Events 🎉</h1>
+
+  <!-- Search + Filter Controls -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" onkeyup="searchEvents()" placeholder="Search events...">
+
+    <select id="category" onchange="filterCategory(this.value)">
+      <option value="all">All Categories</option>
+      {% for category in categories %}
+        <option value="{{ category }}">{{ category }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<!-- Event Grid -->
+<div class="event-grid" id="eventGrid">
+  {% for event in events %}
+    <div class="event-card" data-category="{{ event.category|lower }}" data-title="{{ event.title|lower }}">
+      <div class="card-inner">
+        <div class="card-front">
+          {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-thumbnail">
+          {% else %}
+            <img src="{% static 'images/default_event.jpg' %}" alt="Event" class="event-thumbnail">
+          {% endif %}
+          <h3>{{ event.title }}</h3>
+          <p class="event-date">📅 {{ event.date }}</p>
+          <p class="event-location">📍 {{ event.location }}</p>
+        </div>
+        <div class="card-back">
+          <p>{{ event.description|truncatewords:20 }}</p>
+          <a href="{% url 'event_detail' event.id %}" class="magic-btn">View Event</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No events available.</p>
+  {% endfor %}
+</div>
+
+<!-- JS for search + filter -->
+<script>
+function searchEvents() {
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  let cards = document.querySelectorAll(".event-card");
+  cards.forEach(card => {
+    let title = card.getAttribute("data-title");
+    card.style.display = title.includes(input) ? "block" : "none";
+  });
+}
+
+function filterCategory(category) {
+  let cards = document.querySelectorAll(".event-card");
+  cards.forEach(card => {
+    if (category === "all" || card.getAttribute("data-category") === category.toLowerCase()) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
+</script>
+{% endblock %}

@@ -1,9 +1,9 @@
 from django import forms
-from .models import Comment
+from .models import EventFeedback
 
 class CommentForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = EventFeedback
         fields = ['content', 'rating']
         widgets = {
             'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share your thoughts...'}),
