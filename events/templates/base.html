@@ -1,82 +1,75 @@
-{% load static %}
-
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>MystoHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/script.js' %}" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventBox</title>
-    <!-- Link to external CSS (to be defined later) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
-    <script src="{% static 'js/scripts.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2/tsparticles.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
-    <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3><b>EventBox</b></h3>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Events</a></li>
-            <li><a href="#">Bookings</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- Header (for mobile view) -->
-    <header class="header-mobile">
-        <a href="javascript:void(0)" class="menu-toggle" onclick="toggleSidebar()">☰</a>
-        <span>EventBox</span>
-    </header>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <section class="intro">
-            <h1 class="title">Welcome to EventBox</h1>
-            <p>Your one-stop solution for event management</p>
-        </section>
-
-        <section class="events">
-            <h2>Upcoming Events</h2>
-            <div class="event-card">
-                <img src="{% static 'images/event1.jpg' %}" alt="Event 1">
-                <h3>Event 1</h3>
-                <p>Details of the event...</p>
-            </div>
-            <div class="event-card">
-                <img src="{% static 'images/event2.jpg' %}" alt="Event 2">
-                <h3>Event 2</h3>
-                <p>Details of the event...</p>
-            </div>
-        </section>
-
-        <section class="contact-form">
-            <h2>Contact Us</h2>
-            <form action="#">
-                <input type="text" name="name" placeholder="Your Name" required>
-                <input type="email" name="email" placeholder="Your Email" required>
-                <textarea name="message" placeholder="Your Message" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
-        </section>
+    <div id="loader">
+        <div class="wand">🪄</div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>Powered by <a href="#">EventBox</a></p>
-    </footer>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container nav-container">
+            <div class="logo"><a href="{% url 'home' %}">MystoHub</a></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'categories' %}">Categories</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
 
-    <!-- Sidebar Toggle Script
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
-    </script> -->
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'favorites' %}">Favorites</a></li>
+                        {% comment %} <li><a href="{% url 'profile' %}">Profile</a></li> {% endcomment %}
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div id="tsparticles"></div>
+    <!-- Main Content -->
+    <main class="site-main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-about">
+                <h4>About MystoHub</h4>
+                <p>Your gateway to mastering the art of illusion and sleight of hand.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'categories' %}">Categories</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <p>🔮 ✨ 🎩</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MystoHub. All rights reserved.</p>
+        </div>
+    </footer>
 
 </body>
 </html>

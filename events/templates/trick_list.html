@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero" id="trick-hero">
+  <h1 class="magic-title">✨ All Magic Tricks ✨</h1>
+
+  <!-- Search + Filter Controls -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" onkeyup="searchTricks()" placeholder="Search tricks...">
+
+    <select id="category" onchange="filterCategory(this.value)">
+      <option value="all">All Categories</option>
+      {% for category in categories %}
+        <option value="{{ category }}">{{ category }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<!-- Trick Grid -->
+<div class="trick-grid" id="trickGrid">
+  {% for trick in tricks %}
+    <div class="trick-card" data-category="{{ trick.category|lower }}" data-title="{{ trick.title|lower }}">
+      <div class="card-inner">
+        <div class="card-front">
+          <h3>{{ trick.title }}</h3>
+          <span class="category-icon">
+            <img src="{% static 'icons/'|add:trick.category|add:'.png' %}" alt="{{ trick.category }}" title="{{ trick.category }}">
+          </span>
+        </div>
+        <div class="card-back">
+          <p>{{ trick.description|truncatewords:20 }}</p>
+          <a href="{% url 'trick_detail' trick.id %}" class="magic-btn">View Trick</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No tricks available.</p>
+  {% endfor %}
+</div>
+{% endblock %}
