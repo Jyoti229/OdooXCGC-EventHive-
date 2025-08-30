@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero" id="category-hero">
+  <h1 class="magic-title">🪄 Explore Magic Trick Categories</h1>
+  <p class="typewriter">Discover tricks by style, props, and illusions</p>
+</div>
+
+<!-- Search Bar -->
+<section class="search-bar">
+  <form method="get" action="{% url 'trick_search' %}">
+    <input type="text" name="q" placeholder="Search tricks..." required>
+    <button type="submit">🔍</button>
+  </form>
+</section>
+
+<!-- Category Grid -->
+<section class="category-grid">
+  {% for category in categories %}
+    <a href="{% url 'trick_list_by_category' category.slug %}" class="category-card">
+      {% if category.icon %}
+        <img src="{{ category.icon.url }}" alt="{{ category.name }}">
+      {% else %}
+        <img src="{% static 'images/default_category.png' %}" alt="{{ category.name }}">
+      {% endif %}
+      <h3>{{ category.name }}</h3>
+    </a>
+  {% empty %}
+    <p>No categories available at the moment.</p>
+  {% endfor %}
+</section>
+{% endblock %}

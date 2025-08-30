@@ -1,55 +1,70 @@
 {% extends 'base.html' %}
-
-{% block title %}Home - EventBox{% endblock %}
-
 {% block content %}
-{% load static %}
-  <!-- Page Header -->
-  <div class="hero-section">
-    <h1 class="hero-title">Welcome to EventBox!</h1>
-    <p class="hero-description">Create, discover, and attend events in a seamless way.</p>
-    <a href="#" class="cta-button">Get Started</a>
-  </div>
 
-  <!-- Featured Events Section -->
-  <div class="featured-events">
-    <h2>Featured Events</h2>
-    <div class="event-list">
-      <div class="event-card">
-        <img src="{% static 'images/event1.jpg' %}" alt="Event 1">
-        <h3>Music Festival</h3>
-        <p>Join us for an amazing music festival with top artists.</p>
-        <a href="#" class="event-link">View Details</a>
-      </div>
-      <div class="event-card">
-        <img src="{% static 'images/event2.jpg' %}" alt="Event 2">
-        <h3>Art Exhibition</h3>
-        <p>Explore the latest art pieces from talented artists.</p>
-        <a href="#" class="event-link">View Details</a>
-      </div>
-      <div class="event-card">
-        <img src="{% static 'images/event3.jpg' %}" alt="Event 3">
-        <h3>Tech Conference</h3>
-        <p>Stay ahead in tech with the latest conference insights.</p>
-        <a href="#" class="event-link">View Details</a>
-      </div>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1 class="magic-title">Welcome to <span>MystoHub</span></h1>
+        <p class="typewriter" id="typewriter"></p>
+
+        <div class="cta-buttons">
+            <a href="{% url 'categories' %}" class="magic-btn">Explore Tricks</a>
+            <a href="{% url 'register' %}" class="magic-btn">Join Now</a>
+        </div>
     </div>
-  </div>
+</section>
 
-  <!-- Why Choose Us Section -->
-  <div class="why-choose-us">
-    <h2>Why Choose EventBox?</h2>
-    <ul class="benefits-list">
-      <li>Easy event creation and management</li>
-      <li>Seamless ticketing and bookings</li>
-      <li>Real-time notifications and updates</li>
-      <li>Comprehensive event discovery tools</li>
-    </ul>
-  </div>
+<!-- Featured Tricks -->
+<section class="featured">
+    <div class="container">
+        <h2>Featured Tricks</h2>
+        <div class="trick-grid">
+            <div class="trick-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h3>Floating Card</h3>
+                    </div>
+                    <div class="card-back">
+                        <p>Levitate a card using just your hands!</p>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Footer Section -->
-  <footer>
-    <p>&copy; 2025 EventBox. All rights reserved.</p>
-  </footer>
+            <div class="trick-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h3>Vanishing Coin</h3>
+                    </div>
+                    <div class="card-back">
+                        <p>A classic trick using sleight of hand and distraction.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trick-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h3>Mentalist Number</h3>
+                    </div>
+                    <div class="card-back">
+                        <p>Predict someone’s number with a clever method.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="categories-preview">
+    <div class="container">
+        <h2>Explore Categories</h2>
+        <div class="category-grid">
+            <div class="category-card">Card Magic</div>
+            <div class="category-card">Coin Tricks</div>
+            <div class="category-card">Mind Reading</div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

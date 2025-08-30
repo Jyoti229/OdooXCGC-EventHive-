@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="contact-hero">
+  <div class="container fade-in">
+    <h1 class="magic-title">Contact <span>MystoHub</span></h1>
+    <p class="sub-text">Have questions, feedback, or just want to say hello? We'd love to hear from you!</p>
+  </div>
+</section>
+
+<section class="contact-form-section">
+  <div class="container fade-in">
+    <form method="post" action="{% url 'contact' %}" class="contact-form">
+      {% csrf_token %}
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" rows="6" placeholder="Your Magical Message..." required></textarea>
+      <button type="submit" class="magic-btn">Send Spell 📩</button>
+    </form>
+
+    <div class="social-links">
+      <h3>Follow Our Magic:</h3>
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

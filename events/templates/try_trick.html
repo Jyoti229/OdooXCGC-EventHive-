@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero" id="try-trick-hero">
+  <h1 class="magic-title">Try: {{ trick.title }}</h1>
+</section>
+
+<div class="try-trick-container">
+  {% if trick.video_url %}
+    <div class="video-box">
+      <iframe width="100%" height="400" src="{{ trick.video_url }}" frameborder="0" allowfullscreen></iframe>
+    </div>
+  {% endif %}
+
+  <div class="instructions">
+    <h2>Instructions</h2>
+    <p>{{ trick.instructions|linebreaks }}</p>
+
+    {% if trick.materials %}
+      <h3>🧰 Materials Required:</h3>
+      <ul>
+        {% for item in trick.materials.splitlines %}
+          <li>{{ item }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <a href="{% url 'trick_detail' trick.id %}" class="magic-btn">⬅ Back to Trick</a>
+  </div>
+</div>
+{% endblock %}
