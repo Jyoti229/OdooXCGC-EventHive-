@@ -27,7 +27,81 @@
       <h3>{{ category.name }}</h3>
     </a>
   {% empty %}
-    <p>No categories available at the moment.</p>
+
+  <div class="container fade-in">
+    <h2>Featured Events</h2>
+    <div class="event-grid">
+      <!-- Event 1: Art Exhibition -->
+      <div class="event-card">
+        <img src="{% static 'images\art exhibition.jpg' %}" alt="Art Exhibition">
+        <h3>Art Exhibition</h3>
+        <p>Explore the creative works of talented students at the college's annual art exhibition. A blend of passion and creativity!</p>
+      </div>
+
+      <!-- Event 2: Tech Conference -->
+      <div class="event-card">
+        <img src="{% static 'images\tech conference.jpeg' %}" alt="Tech Conference">
+        <h3>Tech Conference</h3>
+        <p>Join the brightest minds in the tech industry for a day of insightful discussions and workshops.</p>
+      </div>
+
+      <!-- Event 3: Music Festival -->
+      <div class="event-card">
+        <img src="{% static 'images\music festival.jpg' %}" alt="Music Festival">
+        <h3>Music Festival</h3>
+        <p>Get lost in the rhythm of live performances from talented student bands and solo artists.</p>
+      </div>
+
+      <!-- Event 4: Food Festival -->
+      <div class="event-card">
+        <img src="{% static 'images\food festival.jpeg' %}" alt="Food Festival">
+        <h3>Food Festival</h3>
+        <p>Savor the flavors of the world at our annual food festival, featuring cuisine from around the globe.</p>
+      </div>
+
+      <!-- Event 5: Fashion Show -->
+      <div class="event-card">
+        <img src="{% static 'images\fashion show.jpg' %}" alt="Fashion Show">
+        <h3>Fashion Show</h3>
+        <p>Witness cutting-edge designs from student designers and models strutting their stuff on the runway.</p>
+      </div>
+
+      <!-- Event 6: Sports Meet -->
+      <div class="event-card">
+        <img src="{% static 'images\sports meet.jpg' %}" alt="Sports Meet">
+        <h3>Sports Meet</h3>
+        <p>Cheer for your peers in a variety of athletic events, from track and field to football and beyond.</p>
+      </div>
+
+      <!-- Event 7: Charity Run -->
+      <div class="event-card">
+        <img src="{% static 'images\charity run.jpeg' %}" alt="Charity Run">
+        <h3>Charity Run</h3>
+        <p>Join us for a fun run that supports meaningful causes while encouraging fitness and community involvement.</p>
+      </div>
+
+      <!-- Event 8: Literature Festival -->
+      <div class="event-card">
+        <img src="{% static 'images\literature fest.jpg' %}" alt="Literature Festival">
+        <h3>Literature Festival</h3>
+        <p>Celebrate the magic of words with authors, poets, and storytellers from around the world.</p>
+      </div>
+
+      <!-- Event 9: Dance Competition -->
+      <div class="event-card">
+        <img src="{% static 'images\dance competition.jpg' %}" alt="Dance Competition">
+        <h3>Dance Competition</h3>
+        <p>Watch stunning dance performances showcasing creativity and passion from students across all disciplines.</p>
+      </div>
+
+      <!-- Event 10: Film Premiere -->
+      <div class="event-card">
+        <img src="{% static 'images\film premiere.jpeg' %}" alt="Film Premiere">
+        <h3>Film Premiere</h3>
+        <p>Be the first to watch exciting student-made films, showcasing creativity and storytelling prowess.</p>
+      </div>
+    </div>
+  </div>
   {% endfor %}
 </section>
 {% endblock %}

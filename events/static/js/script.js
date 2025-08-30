@@ -11,9 +11,16 @@ setInterval(createStar, 500);
 
 // === Typewriter Text Effect ===
 const phrases = [
-  "100+ Magic Tricks at your fingertips!",
-  "Card Tricks, Coin Tricks & More!",
-  "Unleash the magician in you!"
+ "Discover 10+ Amazing College Events in One Place!",
+  "From Tech Conferences to Music Festivals - We've Got It All!",
+  "Join the EventBox community and never miss an event!",
+  "Your Ultimate Hub for College Events - All in One Place!",
+  "Unforgettable Experiences Await You at EventBox!",
+  "Explore and Attend Events You’re Passionate About!",
+  "Get the Latest Updates on Campus Events - Stay in the Loop!",
+  "EventBox: Connecting You to The Best College Events!",
+  "Experience College Life Like Never Before - With EventBox!",
+  "Join Now and Be Part of the Most Exciting Events in Town!"
 ];
 let i = 0, j = 0, currentPhrase = [], isDeleting = false;
 

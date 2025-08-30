@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MystoHub</title>
+    <title>EventBox</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <script src="{% static 'js/script.js' %}" defer></script>
@@ -19,7 +19,7 @@
     <!-- Header -->
     <header class="site-header">
         <div class="container nav-container">
-            <div class="logo"><a href="{% url 'home' %}">MystoHub</a></div>
+            <div class="logo"><a href="{% url 'home' %}">EventBox</a></div>
             <nav>
                 <ul class="nav-links">
                     <li><a href="{% url 'home' %}">Home</a></li>
@@ -29,7 +29,6 @@
 
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'favorites' %}">Favorites</a></li>
-                        {% comment %} <li><a href="{% url 'profile' %}">Profile</a></li> {% endcomment %}
                         <li><a href="{% url 'logout' %}">Logout</a></li>
                     {% else %}
                         <li><a href="{% url 'login' %}">Login</a></li>
@@ -41,17 +40,178 @@
     </header>
 
     <div id="tsparticles"></div>
+    
     <!-- Main Content -->
     <main class="site-main">
-        {% block content %}{% endblock %}
+        {% block content %}
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1 class="magic-title">Welcome to <span>EventBox</span></h1>
+                <p class="typewriter" id="typewriter">Discover and Join College Events in a Flash!</p>
+
+                <div class="cta-buttons">
+                    <a href="{% url 'categories' %}" class="magic-btn">Explore Events</a>
+                    <a href="{% url 'register' %}" class="magic-btn">Join Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Events -->
+        <section class="featured">
+            <div class="container">
+                <h2>Featured Events</h2>
+                <div class="Event-grid">
+                    <!-- Event 1: Art Exhibition -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Art Exhibition</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Explore a collection of masterpieces from renowned college artists.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 2: Tech Conference -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Tech Conference</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Join discussions on cutting-edge technology with industry leaders.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 3: Music Festival -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Music Festival</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Experience amazing live performances from student musicians.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 4: Food Festival -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Food Festival</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Taste dishes from around the world at the college food fair.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 5: Fashion Show -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Fashion Show</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Witness the latest trends and designs from student designers.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 6: Sports Meet -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Sports Meet</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Watch thrilling competitions and cheer for your favorite teams.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 7: Charity Run -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Charity Run</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Participate in a charity run to raise funds for a cause.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 8: Literature Festival -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Literature Festival</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Meet authors and explore the world of storytelling.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 9: Dance Competition -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Dance Competition</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Enjoy jaw-dropping performances from the best dancers on campus.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event 10: Film Premiere -->
+                    <div class="Event-card">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Film Premiere</h3>
+                            </div>
+                            <div class="card-back">
+                                <p>Be the first to watch the latest college film production.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories-preview">
+            <div class="container">
+                <h2>Explore Categories</h2>
+                <div class="category-grid">
+                    <div class="category-card">Art & Exhibitions</div>
+                    <div class="category-card">Tech & Innovation</div>
+                    <div class="category-card">Music & Dance</div>
+                    <div class="category-card">Sports & Fitness</div>
+                    <div class="category-card">Literature & Arts</div>
+                    <div class="category-card">Food & Culinary</div>
+                    <div class="category-card">Charity & Social Impact</div>
+                    <div class="category-card">Fashion & Style</div>
+                    <div class="category-card">Film & Media</div>
+                </div>
+            </div>
+        </section>
+
+        {% endblock %}
     </main>
 
     <!-- Footer -->
     <footer class="site-footer">
         <div class="container footer-content">
             <div class="footer-about">
-                <h4>About MystoHub</h4>
-                <p>Your gateway to mastering the art of illusion and sleight of hand.</p>
+                <h4>About EventBox</h4>
+                <p>A platform for students to discover and organize college events.</p>
             </div>
             <div class="footer-links">
                 <h4>Quick Links</h4>
@@ -67,7 +227,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 MystoHub. All rights reserved.</p>
+            <p>&copy; 2025 EventBox. All rights reserved.</p>
         </div>
     </footer>
 
