@@ -36,6 +36,7 @@
         <div class="card-back">
           <p>{{ event.description|truncatewords:20 }}</p>
           <a href="{% url 'event_detail' event.id %}" class="magic-btn">View Event</a>
+          <a href="{% url 'booking_form' event.id %}" class="magic-btn">Book Ticket</a>
         </div>
       </div>
     </div>
@@ -43,6 +44,29 @@
     <p>No events available.</p>
   {% endfor %}
 </div>
+
+<!-- Event Detail Modal (hidden by default) -->
+
+<div class="event-detail">
+  <h1>{{ event.title }}</h1>
+  <p>{{ event.description }}</p>
+  <p>📅 {{ event.date }}</p>
+  <p>📍 {{ event.location }}</p>
+
+  <!-- Show available ticket types -->
+  <h3>Available Ticket Types:</h3>
+  <ul>
+    {% for ticket in event.ticket_types.all %}
+      <li>{{ ticket.name }} - ₹{{ ticket.price }} ({{ ticket.remaining_quantity }} left)</li>
+    {% empty %}
+      <li>No tickets available.</li>
+    {% endfor %}
+  </ul>
+
+  <!-- Book Ticket Button -->
+  <a href="{% url 'booking_form' event.id %}" class="magic-btn">🎟 Book Ticket</a>
+</div>
+
 
 <!-- JS for search + filter -->
 <script>

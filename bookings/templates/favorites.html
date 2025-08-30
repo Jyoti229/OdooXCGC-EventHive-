@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="favorites-container" style="max-width: 900px; margin: auto; padding: 2rem;">
+  <h2 style="text-align: center; font-size: 2rem; margin-bottom: 1.5rem; color: #333;">⭐ My Favorite Events</h2>
+
+  <div id="favorites-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+    {% for event in favorite_events %}
+    <div class="event-card" style="background: #f9f9f9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1rem; transition: transform 0.3s;">
+      <h3 style="margin-top: 0; font-size: 1.25rem; color: #444;">{{ event.title }}</h3>
+      <p style="font-size: 0.95rem; color: #666;">📍 {{ event.location }} | 🗓 {{ event.start_datetime|date:"M d, Y H:i" }}</p>
+      <a href="{% url 'event_detail' event.id %}" style="display: inline-block; margin-top: 0.5rem; color: #007bff; text-decoration: none;">View Details</a>
+      <button onclick="removeFromFavorites(this)" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">
+        Remove
+      </button>
+    </div>
+    {% empty %}
+      <p id="empty-message" style="text-align: center; color: #777; margin-top: 2rem;">
+        No favorite events yet.
+      </p>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function removeFromFavorites(button) {
+    const card = button.closest('.event-card');
+    card.remove();
+
+    const list = document.getElementById('favorites-list');
+    if (list.children.length === 0) {
+      document.getElementById('empty-message').style.display = 'block';
+    }
+  }
+</script>
+{% endblock %}

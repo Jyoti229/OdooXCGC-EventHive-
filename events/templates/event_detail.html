@@ -34,6 +34,7 @@
 
       <div class="btn-group">
         <a href="{% url 'event_list' %}" class="magic-btn">⬅ Back to Events</a>
+        <a href="{% url 'booking_form' event.id %}" class="magic-btn">🎟 Book Ticket</a>
         {% if event.registration_link %}
           <a href="{{ event.registration_link }}" target="_blank" class="magic-btn">📝 Register</a>
         {% endif %}
@@ -61,4 +62,5 @@
     <p>No reviews yet. Be the first to comment!</p>
   {% endfor %}
 </section>
+{% include 'bookings/booking_form.html' %}
 {% endblock %}

@@ -1,7 +1,6 @@
 from django.db import models
-from django.conf import settings  # for User model
-from events.models import Event, TicketType  # from Person C’s app
-
+from django.conf import settings 
+from events.models import Event, TicketType 
 
 class Booking(models.Model):
     PAYMENT_STATUS_CHOICES = [
@@ -45,10 +44,6 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment for Booking #{self.booking.id} - {self.status}"
 
-from django.db import models
-from .models import Booking  # Booking is in same app
-
-
 class CheckIn(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -61,3 +56,14 @@ class CheckIn(models.Model):
 
     def __str__(self):
         return f"CheckIn - {self.booking.user.username} - {self.status}"
+
+
+# TicketInstance: stores ticket ID and QR code for each booking
+class TicketInstance(models.Model):
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, related_name='ticket_instance')
+    ticket_id = models.CharField(max_length=100, unique=True)
+    qr_code = models.ImageField(upload_to='qr_codes/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Ticket {self.ticket_id} for Booking #{self.booking.id}"

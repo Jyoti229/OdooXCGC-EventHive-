@@ -34,6 +34,7 @@
              class="text-lg text-indigo-600 font-medium hover:underline">
             {{ event.title }}
           </a>
+          <a href="{% url 'booking_form' event.pk %}" class="magic-btn">Book Ticket</a>
           <p class="text-gray-600 text-sm mt-1">
             📅 {{ event.date }} | 📍 {{ event.location }}
           </p>

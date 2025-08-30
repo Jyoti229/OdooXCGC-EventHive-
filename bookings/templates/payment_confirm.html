@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Payment Confirmation</h2>
+<p>Your booking for <strong>{{ booking.event.title }}</strong> is confirmed!</p>
+<p>Payment Status: <strong>{{ payment.status }}</strong></p>
+<p>Transaction ID: <strong>{{ payment.transaction_id }}</strong></p>
+<p>Amount Paid: <strong>{{ payment.amount }}</strong></p>
+{% if ticket_instance %}
+	<h3>Your Ticket</h3>
+	<p>Ticket ID: <strong>{{ ticket_instance.ticket_id }}</strong></p>
+	<img src="{{ ticket_instance.qr_code.url }}" alt="QR Code" style="width:200px;">
+{% endif %}
+<a href="{% url 'event_list' %}">Back to Events</a>
+{% endblock %}
