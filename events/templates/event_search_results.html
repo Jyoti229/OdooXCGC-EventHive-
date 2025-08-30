@@ -6,9 +6,9 @@
     Search Results for "{{ query }}"
   </h2>
 
-  <!-- Search Bar -->
-  <div class="mb-6 flex justify-between items-center">
-    <form action="{% url 'event_search' %}" method="get" class="flex w-full gap-2">
+  <!-- Search Bar & Filters -->
+  <div class="mb-6 flex flex-col gap-4">
+    <form action="{% url 'event_search' %}" method="get" class="flex flex-wrap gap-2 items-center">
       <input
         type="text"
         name="q"
@@ -16,6 +16,19 @@
         value="{{ query }}"
         class="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
       >
+      <select name="category" class="px-2 py-1 border rounded">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% ifselected_category == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+      <input type="date" name="date_from" value="{{ date_from }}" class="px-2 py-1 border rounded" placeholder="From">
+      <input type="date" name="date_to" value="{{ date_to }}" class="px-2 py-1 border rounded" placeholder="To">
+      <input type="text" name="location" value="{{ location }}" class="px-2 py-1 border rounded" placeholder="Location">
+      <input type="number" name="price_min" value="{{ price_min }}" class="px-2 py-1 border rounded" placeholder="Min Price">
+      <input type="number" name="price_max" value="{{ price_max }}" class="px-2 py-1 border rounded" placeholder="Max Price">
+      <input type="number" name="rating_min" value="{{ rating_min }}" class="px-2 py-1 border rounded" placeholder="Min Rating">
+      <label><input type="checkbox" name="trending" value="1" {% if trending %}checked{% endif %}> Trending</label>
       <button
         type="submit"
         class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
@@ -44,6 +57,18 @@
         </li>
       {% endfor %}
     </ul>
+    <!-- Pagination Controls -->
+    <div class="mt-8 flex justify-center">
+      <nav class="inline-flex gap-2">
+        {% if page_obj.has_previous %}
+          <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded hover:bg-indigo-100">Previous</a>
+        {% endif %}
+        <span class="px-3 py-1 border rounded bg-indigo-50">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="?{% for k,v in request.GET.items %}{% if k != 'page' %}{{ k }}={{ v }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded hover:bg-indigo-100">Next</a>
+        {% endif %}
+      </nav>
+    </div>
   {% else %}
     <div class="text-center mt-10 text-gray-600">
       <p>No events found matching your search.</p>

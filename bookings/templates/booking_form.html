@@ -3,7 +3,21 @@
 <h2>Book Tickets for {{ event.title }}</h2>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div>
+        <label for="id_ticket_type">Ticket Type:</label>
+        <select name="ticket_type" id="id_ticket_type">
+            {% for tt in ticket_types %}
+                <option value="{{ tt.id }}">
+                    {{ tt.name }} - ₹{{ tt.price }} | Available: {{ tt.remaining_quantity }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    {{ form.event }}
+    <div>
+        <label for="id_quantity">Quantity:</label>
+        {{ form.quantity }}
+    </div>
     <button type="submit">Book Now</button>
 </form>
 {% endblock %}

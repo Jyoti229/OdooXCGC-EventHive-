@@ -9,5 +9,15 @@
 </form>
 {% if message %}
     <p><strong>{{ message }}</strong></p>
+    {% if attendee and booking %}
+        <div class="attendee-info">
+            <h3>Attendee Info</h3>
+            <p>Name: {{ attendee.username }}</p>
+            <p>Email: {{ attendee.email }}</p>
+            <p>Event: {{ booking.event.title }}</p>
+            <p>Ticket Type: {{ booking.ticket_type.name }}</p>
+            <p>Quantity: {{ booking.quantity }}</p>
+        </div>
+    {% endif %}
 {% endif %}
 {% endblock %}

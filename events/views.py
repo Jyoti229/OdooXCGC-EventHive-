@@ -1,22 +1,81 @@
-
-from django.shortcuts import get_object_or_404, render, redirect
-from .models import Event, Category, UserProfile
-from .forms import CommentForm
+# Event Delete View
+@login_required
+def event_delete(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if event.organizer != request.user:
+        messages.error(request, 'You do not have permission to delete this event.')
+        return redirect('event_detail', pk=pk)
+    if request.method == 'POST':
+        event.delete()
+        messages.success(request, 'Event deleted successfully!')
+        return redirect('home')
+    return render(request, 'event_confirm_delete.html', {'event': event})
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.contrib.auth import login
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, render, redirect
 from django.db import IntegrityError
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import make_password
 from django.db.models import Q
-from django.shortcuts import render, get_object_or_404
+from django.db import models
+from django.contrib.auth.decorators import login_required
 
-# About Page
-def about(request):
-    return render(request, 'about.html')
-# Home Page
-def home(request):
-    return render(request, 'home.html')
+from .models import Event, Category, UserProfile, Comment
+from .forms import CommentForm, EventForm
+# Event Creation View
+@login_required
+def event_create(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.organizer = request.user  # If you have an organizer field
+            event.save()
+            messages.success(request, 'Event created successfully!')
+            return redirect('event_detail', pk=event.pk)
+    else:
+        form = EventForm()
+    return render(request, 'event_form.html', {'form': form})
 
+# Event Edit View
+@login_required
+def event_edit(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    if event.organizer != request.user:
+        messages.error(request, 'You do not have permission to edit this event.')
+        return redirect('event_detail', pk=pk)
+    if request.method == 'POST':
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Event updated successfully!')
+            return redirect('event_detail', pk=event.pk)
+    else:
+        form = EventForm(instance=event)
+    return render(request, 'event_form.html', {'form': form, 'event': event})
+
+
+# Login View
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = User.objects.get(email=email)
+            user_auth = authenticate(request, username=user.username, password=password)
+            if user_auth is not None:
+                login(request, user_auth)
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect('home')
+            else:
+                messages.error(request, "Invalid email or password.")
+        except User.DoesNotExist:
+            messages.error(request, "Account not found.")
+        return render(request, "login.html")
+    return render(request, "login.html")
+
+
+# Register View
 def register_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -29,13 +88,13 @@ def register_view(request):
         state = request.POST.get('state')
         country = request.POST.get('country')
 
-        if not all([username, email, password1, password2]):
-            messages.error(request, "Please fill in all required fields.")
-            return redirect('register')
+        if not all([username, email, password1, password2, phone, address, city, state, country]):
+            messages.error(request, 'Please fill in all required fields.')
+            return render(request, 'register.html')
 
         if password1 != password2:
-            messages.error(request, "Passwords do not match.")
-            return redirect('register')
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'register.html')
 
         try:
             user = User.objects.create_user(username=username, email=email, password=password1)
@@ -47,99 +106,150 @@ def register_view(request):
                 state=state,
                 country=country
             )
-            messages.success(request, "Registration successful! You can now log in.")
-            print("REDIRECTING TO LOGIN")
-            return render(request, 'login.html')
+            messages.success(request, "Registration successful! Please log in.")
+            return redirect('login')  
         except IntegrityError:
             messages.error(request, "Username or email already exists.")
             return redirect('register')
 
     return render(request, 'register.html')
 
+
+
+# Basic Pages
+def home(request):
+    return render(request, 'home.html')
+
+def about(request):
+    return render(request, 'about.html')
+
 def contact_view(request):
     return render(request, 'contact.html')
+
+def favorites(request):
+    return render(request, 'favorites.html')
+
 
 # Category Listing Page
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'categories.html', {'categories': categories})
 
-#Event List by Category
+
+# Event List by Category
 def event_list_by_category(request, slug):
     category = get_object_or_404(Category, slug=slug)
-    events = Event.objects.filter(category=category)
-    return render(request, 'bookings/event_list.html', {
-        'events': events,
-        'category': category
-    })
+    if request.user.is_authenticated:
+        events = Event.objects.filter(category=category).filter(
+            (Q(status='PUBLISHED')) | (Q(status='DRAFT', organizer=request.user))
+        )
+    else:
+        events = Event.objects.filter(category=category, status='PUBLISHED')
+    return render(request, 'event_list.html', {'events': events, 'category': category})
 
-# Event detail page
+
+# Event Detail Page + Comments
 def event_detail(request, pk):
     event = get_object_or_404(Event, pk=pk)
-    return render(request, 'bookings/event_detail.html', {
-        'event': event
-    })
+    comments = event.comments.all().order_by('-created_at')
 
-# # Event Detail + Feedback
-def event_detail(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-    feedbacks = event.feedbacks.all().order_by('-created_at')
     if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to comment.")
+            return redirect('login')
+
         form = CommentForm(request.POST)
         if form.is_valid():
-            new_feedback = form.save(commit=False)
-            new_feedback.event = event
-            new_feedback.user = request.user
-            new_feedback.save()
+            new_comment = form.save(commit=False)
+            new_comment.event = event
+            new_comment.user = request.user
+            new_comment.save()
             return redirect('event_detail', pk=pk)
     else:
         form = CommentForm()
-    return render(request, 'bookings/event_detail.html', {
-        'event': event,
-        'form': form,
-        'feedbacks': feedbacks
-    })
+
+    return render(request, 'event_detail.html', {'event': event, 'form': form, 'comments': comments})
 
 
 # Event Search
 def event_search(request):
     query = request.GET.get('q')
-    results = []
+    category_id = request.GET.get('category')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    location = request.GET.get('location')
+    price_min = request.GET.get('price_min')
+    price_max = request.GET.get('price_max')
+    rating_min = request.GET.get('rating_min')
+    trending = request.GET.get('trending')
 
+    results = Event.objects.all()
     if query:
-        results = Event.objects.filter(
-            Q(title__icontains=query) |
-            Q(description__icontains=query) |
-            Q(location__icontains=query)
-        )
+        results = results.filter(Q(title__icontains=query) | Q(description__icontains=query))
+    if category_id:
+        results = results.filter(category_id=category_id)
+    if date_from:
+        results = results.filter(date__gte=date_from)
+    if date_to:
+        results = results.filter(date__lte=date_to)
+    if location:
+        results = results.filter(location__icontains=location)
+    if price_min or price_max:
+        from events.models import TicketType
+        event_ids = TicketType.objects.all()
+        if price_min:
+            event_ids = event_ids.filter(price__gte=price_min)
+        if price_max:
+            event_ids = event_ids.filter(price__lte=price_max)
+        results = results.filter(id__in=event_ids.values_list('event_id', flat=True))
+    if rating_min:
+        results = results.filter(feedbacks__rating__gte=rating_min)
+    if trending:
+        # Example: trending = '1' means sort by most bookings
+        from bookings.models import Booking
+        event_ids = Booking.objects.values('event').annotate(num= models.Count('id')).order_by('-num').values_list('event', flat=True)
+        results = results.filter(id__in=event_ids)
 
-    return render(request, 'bookings/event_search_results.html', {
+    if request.user.is_authenticated:
+        results = results.filter((Q(status='PUBLISHED')) | (Q(status='DRAFT', organizer=request.user)))
+    else:
+        results = results.filter(status='PUBLISHED')
+
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    paginator = Paginator(results.distinct(), 10)  # 10 events per page
+    page = request.GET.get('page')
+    try:
+        paged_results = paginator.page(page)
+    except PageNotAnInteger:
+        paged_results = paginator.page(1)
+    except EmptyPage:
+        paged_results = paginator.page(paginator.num_pages)
+
+    categories = Category.objects.all()
+    return render(request, 'event_search_results.html', {
         'query': query,
-        'results': results
+        'results': paged_results,
+        'categories': categories,
+        'selected_category': category_id,
+        'date_from': date_from,
+        'date_to': date_to,
+        'location': location,
+        'price_min': price_min,
+        'price_max': price_max,
+        'rating_min': rating_min,
+        'trending': trending,
+        'page_obj': paged_results,
     })
 
 
-def login_view(request):
-    from django.contrib.auth.forms import AuthenticationForm
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            login(request, form.get_user())
-            messages.success(request, "Login successful!")
-            return redirect('home')
-        else:
-            messages.error(request, "Invalid username or password.")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
-
-
+# Logout
 def logout_view(request):
     request.session.flush()
     messages.success(request, "You have been logged out.")
     return redirect('login')
 
 
+# Forgot Password
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -158,7 +268,3 @@ def forgot_password(request):
             return render(request, 'forgot_password.html', {'message': 'No account found with that email.'})
 
     return render(request, 'forgot_password.html')
-
-
-def favorites(request):
-    return render(request, 'favorites.html')

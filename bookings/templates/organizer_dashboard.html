@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Organizer Dashboard</h2>
+{% for stat in event_stats %}
+  <div class="event-box">
+    <h3>{{ stat.event.title }}</h3>
+    <p>Date: {{ stat.event.date }} | Location: {{ stat.event.location }}</p>
+    <p>Total Tickets Sold: {{ stat.total_tickets }}</p>
+    <p>Total Sales: ₹{{ stat.total_sales }}</p>
+    <h4>Bookings:</h4>
+    <ul>
+      {% for booking in stat.bookings %}
+        <li>{{ booking.user.username }} - {{ booking.ticket_type.name }} x {{ booking.quantity }} (₹{{ booking.total_price }})</li>
+      {% empty %}
+        <li>No bookings yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <hr>
+{% empty %}
+  <p>No events found for you.</p>
+{% endfor %}
+{% endblock %}

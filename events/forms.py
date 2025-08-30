@@ -1,5 +1,22 @@
+
 from django import forms
-from .models import EventFeedback
+from .models import Event, EventFeedback
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['title', 'description', 'date', 'time', 'location', 'category', 'status']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'time': forms.TimeInput(attrs={'type': 'time'}),
+            'category': forms.Select(),
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 3}),
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'time': forms.TimeInput(attrs={'type': 'time'}),
+        }
 
 class CommentForm(forms.ModelForm):
     class Meta:

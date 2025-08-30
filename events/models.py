@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # UserProfile for extra info
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -13,6 +14,7 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 # Event Categories
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -24,24 +26,32 @@ class Category(models.Model):
 
 # Event Model
 class Event(models.Model):
-    CATEGORY_CHOICES = (
-        ('workshop', 'Workshop'),
-        ('concert', 'Concert'),
-        ('sports', 'Sports'),
-        ('hackathon', 'Hackathon'),
-    )
-
     title = models.CharField(max_length=200)
     description = models.TextField()
     date = models.DateField()
     time = models.TimeField(null=True, blank=True)
     location = models.CharField(max_length=200)
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    is_published = models.BooleanField(default=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='events')
+    STATUS_CHOICES = (
+        ('DRAFT', 'Draft'),
+        ('PUBLISHED', 'Published'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='DRAFT')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+
+# 💬 Comment Model (added so event_detail view works)
+class Comment(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.event.title}"
 
 
 # Ticket Types for each event
@@ -57,11 +67,6 @@ class TicketType(models.Model):
         return f"{self.name} - {self.event.title}"
 
 
-
-    def __str__(self):
-        return f"{self.user.username} - {self.event.title}"
-
-
 # Favorite Events
 class FavoriteEvent(models.Model):
     user = models.ForeignKey(User, related_name="favorites", on_delete=models.CASCADE)
@@ -75,7 +80,7 @@ class FavoriteEvent(models.Model):
         return f"{self.user.username} - {self.event.title}"
 
 
-# Optional: Promo Codes / Discounts
+# Promo Codes / Discounts
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
     discount_percent = models.PositiveIntegerField()
@@ -88,13 +93,13 @@ class PromoCode(models.Model):
         return f"{self.code} - {self.discount_percent}%"
 
 
+# Feedback
 class EventFeedback(models.Model):
-    event = models.ForeignKey('Event', related_name='feedbacks', on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, related_name='feedbacks', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()  # ye add karo
-    rating = models.IntegerField(default=5)  # ye add karo
+    content = models.TextField()
+    rating = models.IntegerField(default=5)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.event.title}"
-
