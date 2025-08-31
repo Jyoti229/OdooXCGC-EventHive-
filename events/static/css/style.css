@@ -699,3 +699,11 @@ form button:hover {
     font-size: 0.9rem;
     color: #555;
 }
+.featured-heading {
+    text-align: center;      /* Centers the heading */
+    font-size: 3em;          /* Increases the size, adjust as needed */
+    font-weight: bold;       /* Makes it bold */
+    margin: 20px 0;          /* Adds spacing above and below */
+    color: #9b59b6;             /* Optional: change color */
+}
+
