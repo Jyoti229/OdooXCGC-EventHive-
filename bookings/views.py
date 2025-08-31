@@ -1,4 +1,15 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
+from django.db.models import Q
+from .models import Booking, Payment, CheckIn, TicketInstance
+from events.models import Event, Category, UserProfile, EventFeedback
+
+
 # Organizer Dashboard View
 @login_required
 def organizer_dashboard(request):
@@ -19,13 +30,6 @@ def organizer_dashboard(request):
             'bookings': bookings,
         })
     return render(request, 'bookings/organizer_dashboard.html', {'event_stats': event_stats})
-from .models import TicketInstance, CheckIn
-from django.shortcuts import render, get_object_or_404, redirect
-from events.models import Event, TicketType
-from .forms import BookingForm
-from .models import Booking
-from django.db import models
-from django.core.mail import send_mail
 
 def event_list(request):
     events = Event.objects.all()
@@ -106,7 +110,7 @@ def payment_confirm(request, booking_id):
     )
 
     # Render invoice as HTML and send as email
-    from django.template.loader import render_to_string
+  
     invoice_html = render_to_string('invoice.html', {'booking': booking})
     send_mail(
         f"Invoice for Booking #{booking.id}",

@@ -650,3 +650,52 @@ form button:hover {
 .text-red-500 {
   font-weight: 500;
 }
+
+/* Container for category and event grids */
+.category-grid, .event-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Cards for category and events */
+.category-card, .event-card {
+    display: block;
+    width: 250px; /* fixed width */
+    text-align: center;
+    text-decoration: none; /* remove underline */
+    color: inherit;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hover effect */
+.category-card:hover, .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Images inside the cards */
+.category-card img, .event-card img {
+    width: 100%;
+    height: 200px; /* fixed height */
+    object-fit: cover; /* crop and fill the container */
+    display: block;
+}
+
+/* Card titles */
+.category-card h3, .event-card h3 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Card descriptions for events */
+.event-card p {
+    padding: 0 10px 10px 10px;
+    font-size: 0.9rem;
+    color: #555;
+}

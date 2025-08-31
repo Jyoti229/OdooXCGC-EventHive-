@@ -1,15 +1,3 @@
-# Event Delete View
-@login_required
-def event_delete(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-    if event.organizer != request.user:
-        messages.error(request, 'You do not have permission to delete this event.')
-        return redirect('event_detail', pk=pk)
-    if request.method == 'POST':
-        event.delete()
-        messages.success(request, 'Event deleted successfully!')
-        return redirect('home')
-    return render(request, 'event_confirm_delete.html', {'event': event})
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -19,101 +7,8 @@ from django.contrib.auth.hashers import make_password
 from django.db.models import Q
 from django.db import models
 from django.contrib.auth.decorators import login_required
-
 from .models import Event, Category, UserProfile, Comment
 from .forms import CommentForm, EventForm
-# Event Creation View
-@login_required
-def event_create(request):
-    if request.method == 'POST':
-        form = EventForm(request.POST)
-        if form.is_valid():
-            event = form.save(commit=False)
-            event.organizer = request.user  # If you have an organizer field
-            event.save()
-            messages.success(request, 'Event created successfully!')
-            return redirect('event_detail', pk=event.pk)
-    else:
-        form = EventForm()
-    return render(request, 'event_form.html', {'form': form})
-
-# Event Edit View
-@login_required
-def event_edit(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-    if event.organizer != request.user:
-        messages.error(request, 'You do not have permission to edit this event.')
-        return redirect('event_detail', pk=pk)
-    if request.method == 'POST':
-        form = EventForm(request.POST, instance=event)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Event updated successfully!')
-            return redirect('event_detail', pk=event.pk)
-    else:
-        form = EventForm(instance=event)
-    return render(request, 'event_form.html', {'form': form, 'event': event})
-
-
-# Login View
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        try:
-            user = User.objects.get(email=email)
-            user_auth = authenticate(request, username=user.username, password=password)
-            if user_auth is not None:
-                login(request, user_auth)
-                messages.success(request, f"Welcome back, {user.username}!")
-                return redirect('home')
-            else:
-                messages.error(request, "Invalid email or password.")
-        except User.DoesNotExist:
-            messages.error(request, "Account not found.")
-        return render(request, "login.html")
-    return render(request, "login.html")
-
-
-# Register View
-def register_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        country = request.POST.get('country')
-
-        if not all([username, email, password1, password2, phone, address, city, state, country]):
-            messages.error(request, 'Please fill in all required fields.')
-            return render(request, 'register.html')
-
-        if password1 != password2:
-            messages.error(request, 'Passwords do not match.')
-            return render(request, 'register.html')
-
-        try:
-            user = User.objects.create_user(username=username, email=email, password=password1)
-            UserProfile.objects.create(
-                user=user,
-                phone=phone,
-                address=address,
-                city=city,
-                state=state,
-                country=country
-            )
-            messages.success(request, "Registration successful! Please log in.")
-            return redirect('login')  
-        except IntegrityError:
-            messages.error(request, "Username or email already exists.")
-            return redirect('register')
-
-    return render(request, 'register.html')
-
 
 
 # Basic Pages
@@ -242,6 +137,65 @@ def event_search(request):
     })
 
 
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(request, username=user_obj.username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect('home')  # Redirect to home page after login
+            else:
+                messages.error(request, "Invalid email or password.")
+        except User.DoesNotExist:
+            messages.error(request, "No account found with this email.")
+    return render(request, "login.html")
+
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        country = request.POST.get('country')
+
+        # Validation
+        if not all([username, email, password1, password2]):
+            messages.error(request, "Please fill in all required fields.")
+            return redirect('register')
+
+        if password1 != password2:
+            messages.error(request, "Passwords do not match.")
+            return redirect('register')
+
+        try:
+            # Create user
+            user = User.objects.create_user(username=username, email=email, password=password1)
+            
+            # Create profile
+            UserProfile.objects.create(
+                user=user,
+                phone=phone,
+                address=address,
+                city=city,
+                state=state,
+                country=country
+            )
+            messages.success(request, "Registration successful! Please log in.")
+            return redirect('login')
+        except IntegrityError:
+            messages.error(request, "Username or email already exists.")
+            return redirect('register')
+
+    return render(request, "register.html")
+
 # Logout
 def logout_view(request):
     request.session.flush()
@@ -268,3 +222,16 @@ def forgot_password(request):
             return render(request, 'forgot_password.html', {'message': 'No account found with that email.'})
 
     return render(request, 'forgot_password.html')
+
+# def event_create(request):
+#     if request.method == 'POST':
+#         form = EventForm(request.POST)
+#         if form.is_valid():
+#             event = form.save(commit=False)
+#             event.organizer = request.user
+#             event.save()
+#             messages.success(request, "Event created successfully!")
+#             return redirect('event_detail', pk=event.pk)
+#     else:
+#         form = EventForm()
+#     return render(request, 'event_form.html', {'form': form})
